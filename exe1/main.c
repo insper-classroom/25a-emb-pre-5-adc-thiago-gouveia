@@ -12,46 +12,34 @@
 void adc_1_task(void *p) {
     adc_init();
     adc_gpio_init(27);
+    adc_gpio_init(26);
 
     // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
     const float conversion_factor = 3.3f / (1 << 12);
 
-    uint16_t result;
+    uint16_t result1;
+    uint16_t result2;
     while (1) {
         adc_select_input(1); // Select ADC input 1 (GPIO27)
-        result = adc_read();
-        printf("voltage 1: %f V\n", result * conversion_factor);
+        result1 = adc_read();
+        adc_select_input(0); // Select ADC input 1 (GPIO27)
+        result2 = adc_read();
 
-        // CÓDIGO AQUI
-
-
+        printf("voltage 1: %f V\n", result1 * conversion_factor);
+        printf("voltage 2: %f V\n", result2 * conversion_factor);
 
         vTaskDelay(pdMS_TO_TICKS(200));
     }
 }
 
 int main() {
-    stdio_init_all();      
+    stdio_init_all();
+    printf("Start RTOS \n");
+    adc_init();
 
-    adc_init();            
-
-    adc_gpio_init(26);
-    adc_gpio_init(27);
+    xTaskCreate(adc_1_task, "LED_Task 1", 4095, NULL, 1, NULL);
+    vTaskStartScheduler();
 
     while (true) {
-        adc_select_input(0);
-        uint16_t raw_0 = adc_read(); 
-        float voltage_0 = raw_0 * (3.3f / (1 << 12));
-
-        adc_select_input(1);
-        uint16_t raw_1 = adc_read();
-        float voltage_1 = raw_1 * (3.3f / (1 << 12));
-
-        printf("voltage 1: %.6f V\n", voltage_0);
-        printf("voltage 2: %.6f V\n\n", voltage_1);
-
-        sleep_ms(1000);
     }
-
-    return 0;
 }
