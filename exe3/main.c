@@ -26,6 +26,7 @@ void data_task(void *p) {
 void process_task(void *p) {
     static int window[5] = {0};
     static int sum = 0;
+
     static int index = 0;
 
     int data = 0;
@@ -37,9 +38,9 @@ void process_task(void *p) {
             sum += data;
             index = (index + 1) % 5;
 
-            float media = sum / 5.0f;
+            int media = sum / 5.0f;
 
-            printf("%.0f\n", media);
+            printf("%d\n", media);
 
             vTaskDelay(pdMS_TO_TICKS(50));
         }
@@ -51,8 +52,8 @@ int main() {
 
     xQueueData = xQueueCreate(64, sizeof(int));
 
-    xTaskCreate(data_task, "Data task ", 2048, NULL, 1, NULL);
-    xTaskCreate(process_task, "Process task", 2048, NULL, 1, NULL);
+    xTaskCreate(data_task, "Data task ", 4096, NULL, 1, NULL);
+    xTaskCreate(process_task, "Process task", 4096, NULL, 1, NULL);
 
     vTaskStartScheduler();
 
