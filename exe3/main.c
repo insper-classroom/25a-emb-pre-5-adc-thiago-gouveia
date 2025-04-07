@@ -51,8 +51,8 @@ int main() {
 
     xQueueData = xQueueCreate(64, sizeof(int));
 
-    xTaskCreate(data_task, "Data task ", 4096, NULL, 1, NULL);
-    xTaskCreate(process_task, "Process task", 4096, NULL, 1, NULL);
+    xTaskCreate(data_task, "Data task ", 2048, NULL, 1, NULL);
+    xTaskCreate(process_task, "Process task", 2048, NULL, 1, NULL);
 
     vTaskStartScheduler();
 
