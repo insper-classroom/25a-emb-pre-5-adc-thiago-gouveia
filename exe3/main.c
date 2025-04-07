@@ -24,16 +24,23 @@ void data_task(void *p) {
 }
 
 void process_task(void *p) {
+    static int window[5] = {0};
+    static int sum = 0;
+    static int index = 0;
+
     int data = 0;
 
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
-            // implementar filtro aqui!
+            sum -= window[index];
+            window[index] = data;
+            sum += data;
+            index = (index + 1) % 5;
 
+            float media = sum / 5.0f;
 
+            printf("%.0f\n", media);
 
-
-            // deixar esse delay!
             vTaskDelay(pdMS_TO_TICKS(50));
         }
     }
